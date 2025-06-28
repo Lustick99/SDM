@@ -74,7 +74,6 @@
 
     <a href="#header-section" class="back-to-top">↑</a>
 
-
     <!-- Navigation flottante -->
     <div id="flonav"></div>
 
@@ -165,6 +164,20 @@
 
     <!-- Charger floating.js APRES insertion dynamique -->
     <script src="js/floating.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const slides = document.querySelectorAll(".header-bg");
+            let current = 0;
+
+            setInterval(() => {
+                slides[current].classList.remove("active");
+                current = (current + 1) % slides.length;
+                slides[current].classList.add("active");
+            }, 5000); // toutes les 5 secondes
+        });
+    </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const rayons = document.querySelectorAll(".rayon-bloc");

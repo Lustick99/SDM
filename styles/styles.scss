@@ -181,19 +181,6 @@ p {
     }
 }
 
-/* ===== Floating Navigation ===== */
-// .floating-link i {
-//     font-size: 1.5rem;
-//     color: white;
-//     transition: transform 0.3s ease, color 0.3s ease;
-// }
-
-// .floating-link:hover i,
-// .floating-link.active i {
-//     color: var(--secondary-color);
-//     transform: scale(1.2);
-// }
-
 .floating-nav {
     position: fixed;
     top: 50%;
@@ -284,23 +271,29 @@ p {
 
 /* ===== Header ===== */
 header {
-    background: url('../assets/images/bg-header2.jpg') no-repeat center center/cover;
-    color: white !important;
-    text-align: center;
     position: relative;
-    height: 500px;
+    height: 600px;
+    overflow: hidden;
+    color: white;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 
     .content {
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.75);
         width: 100%;
         height: 100%;
+        display: flex;
         padding: 100px 20px;
         vertical-align: middle;
         margin: 0;
+        z-index: 3;
+        flex-wrap: wrap;
+        flex-direction: column;
+        align-content: center;
+        align-items: center;
+        justify-content: space-evenly;
 
         h1 {
             font-family: 'Thilander Serif', serif;
@@ -342,9 +335,39 @@ header {
                 }
             }
         }
+    }
 
+    /* Couche des images en fond */
+    .header-bg {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        z-index: 0;
+    }
+
+    /* Slide actif */
+    .header-bg.active {
+        opacity: 1;
+        animation: fadeIn 1s ease-in-out;
+        z-index: 2;
+    }
+
+    /* Couche du contenu texte */
+    .header .content {
+        position: relative;
+        z-index: 1;
+        // background: rgba(0, 0, 0, 0.5);
+        width: 100%;
+        padding: 100px 20px;
     }
 }
+
+
 
 /* ===== Description de l'entreprise ===== */
 .description-section {
@@ -382,6 +405,8 @@ header {
 .rayons-section p {
     font-size: 1.1rem;
     margin-bottom: 2rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
 }
 
 .rayon-section:hover {
@@ -394,21 +419,22 @@ header {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
-    margin-top: 40px;
+    margin-top: 50px;
     justify-content: center;
 }
 
 .rayon-card {
     // background-color: white;
     border-radius: 12px;
+    overflow: hidden;
     // padding: 30px 20px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .rayon-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 /* ===== Rayon : Repas chaud & sandwiches ===== */
@@ -604,7 +630,7 @@ header {
     justify-content: space-between;
     align-items: center;
     gap: 30px;
-    padding: 40px 0;
+    padding: 40px;
 }
 
 /* Image et texte prennent chacun 50% */
