@@ -1,0 +1,370 @@
+<!-- <!DOCTYPE html> -->
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saveurs du Monde</title>
+
+    <!-- Thilander (CDN inline) -->
+    <link href="https://cdn.jsdelivr.net/npm/thilandercss@latest/dist/thilander.min.css" rel="stylesheet" />
+
+    <!-- Feuille de style personnalisée -->
+    <link rel="stylesheet" href="styles/styles.scss" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+
+    <!-- Police Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+
+    <!-- Meta Tags SEO -->
+    <meta name="description"
+        content="Découvrez les saveurs du monde avec nos recettes de repas, pâtisseries et boissons. Explorez la cuisine internationale à travers des plats savoureux et authentiques." />
+    <meta name="keywords" content="recettes, repas, pâtisseries, boissons, cuisine internationale, saveurs du monde" />
+    <meta name="author" content="Votre Nom ou Entreprise" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="Saveurs du Monde" />
+    <meta property="og:description"
+        content="Découvrez les saveurs du monde avec nos recettes de repas, pâtisseries et boissons. Explorez la cuisine internationale à travers des plats savoureux et authentiques." />
+    <meta property="og:image" content="images/thumbnail.jpg" />
+    <meta property="og:url" content="https://votre-site.com" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Saveurs du Monde" />
+    <meta name="twitter:description"
+        content="Découvrez les saveurs du monde avec nos recettes de repas, pâtisseries et boissons. Explorez la cuisine internationale à travers des plats savoureux et authentiques." />
+    <meta name="twitter:image" content="images/thumbnail.jpg" />
+    <meta name="twitter:site" content="@votrecompte" />
+    <meta name="twitter:creator" content="@votrecompte" />
+    <link rel="canonical" href="https://votre-site.com" />
+    <link rel="alternate" href="https://votre-site.com" hreflang="fr" />
+    <link rel="alternate" href="https://votre-site.com/en" hreflang="en" />
+
+    <!-- Bibliothèques JavaScript (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/thilandercss@latest/dist/thilander.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+
+</head>
+
+<body>
+    <!-- <div id="parallax-bg"></div> -->
+
+    <!-- Loading screen -->
+    <div id="loading-screen">
+        <div class="loader-content">
+            <div class="loader-circle"></div>
+            <p>Chargement de Saveurs du Monde...</p>
+        </div>
+    </div>
+
+    <a href="#header-section" class="back-to-top">↑</a>
+
+
+    <!-- Navigation flottante -->
+    <div id="flonav"></div>
+
+    <!-- Section Header -->
+    <div id="header-section">
+        <!-- Contenu de sections/header.html sera inséré ici -->
+    </div>
+
+    <!-- Main content area -->
+    <!-- Section Description -->
+    <div id="description-section"></div>
+
+    <!-- Section Rayons -->
+    <div id="rayons-container"></div>
+
+    <!-- Section Rayons défilants -->
+    <div id="nrayons"></div>
+
+    <!-- Section Détails des Rayons -->
+    <div id="details"> </div>
+
+    <!-- Section Galeries -->
+    <div id="galerie-section"></div>
+
+    <!-- Section Contact -->
+    <div id="contact-section"></div>
+
+    <!-- Section Footer -->
+    <div id="footer-section"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("contact-form");
+            form.addEventListener("submit", e => {
+                e.preventDefault();
+                if (!form.checkValidity()) {
+                    alert("Veuillez remplir tous les champs correctement.");
+                    return;
+                }
+                alert("Merci pour votre message !");
+                form.reset();
+            });
+        });
+
+        // Chargement dynamique des sections HTML (JS pur)
+        function loadSection(id, path) {
+            fetch(path)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById(id).innerHTML = html;
+                });
+        }
+        // Affichage du bouton "Retour en haut"
+        window.addEventListener("scroll", () => {
+            const backToTop = document.querySelector(".back-to-top");
+            if (window.scrollY > 300) {
+                backToTop.classList.add("show");
+            } else {
+                backToTop.classList.remove("show");
+            }
+        });
+
+        // Chargement des sections
+        loadSection("flonav", "layout/flnav.html");
+        loadSection("header-section", "sections/header.html");
+        loadSection("description-section", "sections/description.html");
+        loadSection("rayons-container", "sections/rayons.html");
+        loadSection("nrayons", "sections/nrayons.html");
+
+        loadSection("repas-section", "sections/repas.html");
+        loadSection("patisserie-section", "sections/patisserie.html");
+        loadSection("boulangerie-section", "sections/boulangerie.html");
+        loadSection("confiserie-section", "sections/confiserie.html");
+        loadSection("salon-section", "sections/salon.html");
+        loadSection("glaces-section", "sections/glaces.html");
+
+        loadSection("details", "sections/details.html");
+
+        loadSection("galerie-section", "sections/galerie.html");
+        loadSection("contact-section", "sections/contact.html");
+        loadSection("footer-section", "sections/footer.html");
+    </script>
+
+    <!-- JavaScript pour le chargement dynamique des sections -->
+    <script src="js/scripts.js"></script>
+    <!-- Charger les animations et effets -->
+    <script src="js/animations.js"></script>
+
+    <!-- Charger floating.js APRES insertion dynamique -->
+    <script src="js/floating.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const rayons = document.querySelectorAll(".rayon-bloc");
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                    }
+                });
+            }, {
+                root: null,
+                threshold: 0.2
+            });
+
+            rayons.forEach(bloc => {
+                observer.observe(bloc);
+            });
+        });
+    </script>
+
+    <script>
+        window.addEventListener("scroll", () => {
+            const offset = window.scrollY * 0.4;
+            document.getElementById("parallax-bg").style.transform = `translateY(-${offset}px)`;
+        });
+
+        // Gestion du défilement vertical narratif des rayons
+        window.addEventListener("scroll", () => {
+            const section = document.querySelector("#rayons-scroll");
+            const slides = section.querySelectorAll(".rayon-slide");
+
+            const scrollTop = window.scrollY;
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const numSlides = slides.length;
+
+            // Ratio global de scroll dans la section (0 à 1)
+            let scrollRatio = (scrollTop - sectionTop) / sectionHeight;
+            scrollRatio = Math.min(1, Math.max(0, scrollRatio));
+
+            slides.forEach((slide, i) => {
+                const content = slide.querySelector(".rayon-content");
+
+                // Calcul de la "fenêtre" de ce slide dans [0,1]
+                const slideStart = i / numSlides;
+                const slideEnd = (i + 1) / numSlides;
+
+                // Progression du scroll dans ce slide (0 à 1)
+                let slideProgress = (scrollRatio - slideStart) / (slideEnd - slideStart);
+                slideProgress = Math.min(1, Math.max(0, slideProgress));
+
+                // Opacité : 0 → 1 → 0 (apparition puis disparition)
+                let opacity = 0;
+                if (slideProgress <= 0.2) {
+                    opacity = 0; // de 0 à 1
+                } else {
+                    opacity = 1;
+                }
+
+                // translateY : 40vh → 0 → -40vh
+                let translateY = 40;
+                if (slideProgress <= 0.5) {
+                    translateY = 40 - slideProgress * 2 * 40; // de 40 à 0
+                } else {
+                    // Après 0.5, on va de 0 à -40
+                    translateY = 40 - slideProgress * 2 * 40;
+                }
+
+                // Appliquer styles
+                content.style.opacity = opacity;
+                content.style.transform = `translateY(${translateY}vh)`;
+
+                // Gestion zIndex et opacity slide background (fade)
+                if (slideProgress > 0 && slideProgress < 1) {
+                    slide.classList.add("active");
+                    slide.style.opacity = 1;
+                    slide.style.zIndex = 2;
+                } else {
+                    slide.classList.remove("active");
+                    slide.style.opacity = 0;
+                    slide.style.zIndex = 1;
+                }
+
+                // Appliquer image de fond
+                const bg = slide.getAttribute("data-bg");
+                if (bg) {
+                    slide.style.setProperty('--slide-bg', `url(${bg})`);
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const firstSlide = document.querySelector(".rayon-slide");
+            const bg = firstSlide.getAttribute("data-bg");
+
+            if (bg) {
+                firstSlide.style.setProperty('--slide-bg', `url(${bg})`);
+            }
+
+            // Forcer une reflow rapide pour appliquer ::before
+            void firstSlide.offsetHeight;
+
+            firstSlide.classList.add("active");
+            firstSlide.style.opacity = 1;
+            firstSlide.style.zIndex = 2;
+        });
+
+
+        // Gestion de la navigation flottante
+        document.addEventListener("DOMContentLoaded", () => {
+            const navLinks = document.querySelectorAll(".floating-link");
+            const sectionIds = Array.from(navLinks).map(link => link.getAttribute("href").substring(1));
+            const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute("id");
+
+                        navLinks.forEach(link => {
+                            if (link.getAttribute("href") === `#${id}`) {
+                                link.classList.add("active");
+                            } else {
+                                link.classList.remove("active");
+                            }
+                        });
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: "0px",
+                threshold: 0.5
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+
+        // Gestion de l'écran de chargement
+        window.addEventListener("load", () => {
+            const loader = document.getElementById("loading-screen");
+            setTimeout(() => {
+                loader.classList.add("hidden");
+            }, 500); // petite pause avant disparition
+        });
+    </script>
+
+    <script>
+        document.querySelector("#contact-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const form = e.target;
+            let isValid = true;
+
+            const fields = [
+                { id: "name", error: "Veuillez renseigner votre nom complet." },
+                { id: "email", error: "Veuillez fournir une adresse e-mail valide." },
+                { id: "message", error: "Le champ message ne peut pas être vide." },
+            ];
+
+            fields.forEach((field) => {
+                const input = document.getElementById(field.id);
+                const errorElement = document.getElementById(`${field.id}Error`);
+                if (!input.value.trim()) {
+                    errorElement.textContent = field.error;
+                    errorElement.style.display = "block";
+                    isValid = false;
+                } else {
+                    errorElement.textContent = "";
+                    errorElement.style.display = "none";
+                }
+            });
+
+            if (isValid) {
+                const successMessage = document.getElementById("successMessage");
+                successMessage.textContent = "Votre message a été envoyé avec succès !";
+                successMessage.style.display = "block";
+                form.reset();
+            }
+        });
+    </script>
+
+    <script>
+        // Lightbox pour la galerie
+        document.querySelectorAll(".gallery-grid img").forEach(img => {
+            img.addEventListener("click", () => {
+                const lightbox = document.getElementById("lightbox");
+                const lightboxImg = lightbox.querySelector(".lightbox-img");
+                lightboxImg.src = img.src;
+                lightbox.style.display = "block";
+            });
+        });
+
+        document.querySelector(".lightbox-close").addEventListener("click", () => {
+            document.getElementById("lightbox").style.display = "none";
+        });
+    </script>
+
+</body>
+
+</html>
