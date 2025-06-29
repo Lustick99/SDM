@@ -780,6 +780,7 @@ section[id^="d-"] {
     margin: 0 auto;
     padding: 60px 20px;
 }
+
 .contact-content {
     display: flex;
     flex-wrap: wrap;
@@ -932,4 +933,139 @@ section[id^="d-"] {
 
 .fade-in-delay-3 {
     transition-delay: 0.6s;
+}
+
+
+/* ===== Responsiveness Générale ===== */
+@media (max-width: 1024px) {
+
+    .container,
+    .rayons-section,
+    .description-section,
+    .galerie-section,
+    #contact-section {
+        padding: 40px 20px;
+    }
+
+    .rayon-content {
+        padding: 100px 20px;
+    }
+
+    .rayon-card {
+        width: 100%;
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 768px) {
+    header .content h1 {
+        font-size: 2.8rem;
+    }
+
+    header .content .subtitle {
+        font-size: 1.2rem;
+    }
+
+    .nav-link {
+        font-size: 1rem !important;
+    }
+
+    .rayon-content {
+        padding: 60px 20px;
+    }
+
+    .rayon-card {
+        width: 90%;
+        max-width: 300px;
+        min-height: 200px;
+        height: 200px;
+
+        img {
+            height: 150px;
+            object-fit: cover;
+        }
+    }
+
+    .floating-nav {
+        top: auto;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: row;
+        padding: 6px 12px;
+        border-radius: 10px;
+    }
+
+    .floating-link {
+        font-size: 1rem;
+        padding: 6px;
+    }
+
+    .description-section h2 {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .rayon-slide {
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+
+    .gallery-grid {
+        column-count: 1;
+    }
+
+    .contact-content {
+        flex-direction: column;
+    }
+
+    .map-container {
+        height: 300px;
+    }
+
+    .footer-section {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .back-to-top {
+        width: 25px;
+        height: 25px;
+        font-size: 1rem;
+        padding: 5px;
+        bottom: 20px;
+        right: 10px;
+    }
+
+    header .content h1 {
+        font-size: 2rem;
+    }
+
+    header .content .subtitle {
+        font-size: 1rem;
+    }
+
+    .description-section p,
+    .rayons-section p,
+    .rayon-content p {
+        font-size: 1rem;
+    }
+
+    .rayon-card {
+        padding: 0.5rem;
+    }
+
+    .btn-primary {
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    .nav-link {
+        font-size: 0.8rem !important;
+    }
+
+    .social-link {
+        font-size: 1rem;
+    }
 }
