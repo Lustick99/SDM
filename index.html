@@ -90,7 +90,7 @@
     <div id="rayons-container"></div>
 
     <!-- Section Rayons défilants -->
-    <div id="nrayons"></div>
+    <!-- <div id="nrayons"></div> -->
 
     <!-- Section Détails des Rayons -->
     <div id="details"> </div>
@@ -105,83 +105,95 @@
     <div id="footer-section"></div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const form = document.getElementById("contact-form");
-            form.addEventListener("submit", e => {
-                e.preventDefault();
-                if (!form.checkValidity()) {
-                    alert("Veuillez remplir tous les champs correctement.");
-                    return;
-                }
-                alert("Merci pour votre message !");
-                form.reset();
-            });
-        });
-
-        // Chargement dynamique des sections HTML (JS pur)
-        function loadSection(id, path) {
+        // Chargement dynamique des sections HTML
+        function loadSection(id, path, callback) {
             fetch(path)
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById(id).innerHTML = html;
+                    if (typeof callback === "function") callback();
                 });
         }
-        // Affichage du bouton "Retour en haut"
-        window.addEventListener("scroll", () => {
-            const backToTop = document.querySelector(".back-to-top");
-            if (window.scrollY > 300) {
-                backToTop.classList.add("show");
-            } else {
-                backToTop.classList.remove("show");
+
+        // Gestion du formulaire
+        loadSection("contact-section", "sections/contact.html", () => {
+            const form = document.getElementById("contact-form");
+            if (form) {
+                form.addEventListener("submit", e => {
+                    e.preventDefault();
+                    if (!form.checkValidity()) {
+                        alert("Veuillez remplir tous les champs correctement.");
+                        return;
+                    }
+                    alert("Merci pour votre message !");
+                    form.reset();
+                });
             }
         });
 
-        // Chargement des sections
-        loadSection("flonav", "layout/flnav.html");
-        loadSection("header-section", "sections/header.html");
-        loadSection("description-section", "sections/description.html");
-        loadSection("rayons-container", "sections/rayons.html");
-        loadSection("nrayons", "sections/nrayons.html");
+        // Bouton retour en haut
+        window.addEventListener("scroll", () => {
+            const backToTop = document.querySelector(".back-to-top");
+            if (backToTop) {
+                backToTop.classList.toggle("show", window.scrollY > 300);
+            }
+        });
 
-        loadSection("repas-section", "sections/repas.html");
-        loadSection("patisserie-section", "sections/patisserie.html");
-        loadSection("boulangerie-section", "sections/boulangerie.html");
-        loadSection("confiserie-section", "sections/confiserie.html");
-        loadSection("salon-section", "sections/salon.html");
-        loadSection("glaces-section", "sections/glaces.html");
-
-        loadSection("details", "sections/details.html");
-
-        loadSection("galerie-section", "sections/galerie.html");
-        loadSection("contact-section", "sections/contact.html");
-        loadSection("footer-section", "sections/footer.html");
-    </script>
-
-    <!-- JavaScript pour le chargement dynamique des sections -->
-    <script src="js/scripts.js"></script>
-    <!-- Charger les animations et effets -->
-    <script src="js/animations.js"></script>
-
-    <!-- Charger floating.js APRES insertion dynamique -->
-    <script src="js/floating.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        // Chargement du header + slideshow animé
+        loadSection("header-section", "sections/header.html", () => {
             const slides = document.querySelectorAll(".header-bg");
             let current = 0;
 
-            setInterval(() => {
-                slides[current].classList.remove("active");
-                current = (current + 1) % slides.length;
-                slides[current].classList.add("active");
-            }, 5000); // toutes les 5 secondes
+            if (slides.length > 0) {
+                setInterval(() => {
+                    const currentSlide = slides[current];
+                    const nextIndex = (current + 1) % slides.length;
+                    const nextSlide = slides[nextIndex];
+
+                    // Supprimer les anciennes classes next
+                    slides.forEach(slide => slide.classList.remove("next"));
+
+                    // Préparer le prochain slide avec effet `next`
+                    nextSlide.classList.add("next");
+
+                    // Forcer reflow pour déclencher les transitions CSS correctement
+                    void nextSlide.offsetHeight;
+
+                    // Retirer `.active` de l'actuel, et le donner au suivant
+                    currentSlide.classList.remove("active");
+                    nextSlide.classList.remove("next");
+                    nextSlide.classList.add("active");
+
+                    // Avancer l'index
+                    current = nextIndex;
+                }, 15000);
+            }
         });
-    </script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        // Description, Galerie, Footer
+        loadSection("description-section", "sections/description.html");
+        loadSection("galerie-section", "sections/galerie.html", () => {
+            const galleryImages = document.querySelectorAll(".gallery-grid img");
+            const lightbox = document.getElementById("lightbox");
+            const lightboxImg = lightbox?.querySelector(".lightbox-img");
+            galleryImages.forEach(img => {
+                img.addEventListener("click", () => {
+                    if (lightbox && lightboxImg) {
+                        lightboxImg.src = img.src;
+                        lightbox.style.display = "block";
+                    }
+                });
+            });
+            document.querySelector(".lightbox-close")?.addEventListener("click", () => {
+                if (lightbox) lightbox.style.display = "none";
+            });
+        });
+
+        loadSection("footer-section", "sections/footer.html");
+
+        // Rayons classiques (intersection fade-in)
+        loadSection("rayons-container", "sections/rayons.html", () => {
             const rayons = document.querySelectorAll(".rayon-bloc");
-
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -192,103 +204,11 @@
                 root: null,
                 threshold: 0.2
             });
-
-            rayons.forEach(bloc => {
-                observer.observe(bloc);
-            });
-        });
-    </script>
-
-    <script>
-        window.addEventListener("scroll", () => {
-            const offset = window.scrollY * 0.4;
-            document.getElementById("parallax-bg").style.transform = `translateY(-${offset}px)`;
+            rayons.forEach(bloc => observer.observe(bloc));
         });
 
-        // Gestion du défilement vertical narratif des rayons
-        window.addEventListener("scroll", () => {
-            const section = document.querySelector("#rayons-scroll");
-            const slides = section.querySelectorAll(".rayon-slide");
-
-            const scrollTop = window.scrollY;
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            const numSlides = slides.length;
-
-            // Ratio global de scroll dans la section (0 à 1)
-            let scrollRatio = (scrollTop - sectionTop) / sectionHeight;
-            scrollRatio = Math.min(1, Math.max(0, scrollRatio));
-
-            slides.forEach((slide, i) => {
-                const content = slide.querySelector(".rayon-content");
-
-                // Calcul de la "fenêtre" de ce slide dans [0,1]
-                const slideStart = i / numSlides;
-                const slideEnd = (i + 1) / numSlides;
-
-                // Progression du scroll dans ce slide (0 à 1)
-                let slideProgress = (scrollRatio - slideStart) / (slideEnd - slideStart);
-                slideProgress = Math.min(1, Math.max(0, slideProgress));
-
-                // Opacité : 0 → 1 → 0 (apparition puis disparition)
-                let opacity = 0;
-                if (slideProgress <= 0.2) {
-                    opacity = 0; // de 0 à 1
-                } else {
-                    opacity = 1;
-                }
-
-                // translateY : 40vh → 0 → -40vh
-                let translateY = 40;
-                if (slideProgress <= 0.5) {
-                    translateY = 40 - slideProgress * 2 * 40; // de 40 à 0
-                } else {
-                    // Après 0.5, on va de 0 à -40
-                    translateY = 40 - slideProgress * 2 * 40;
-                }
-
-                // Appliquer styles
-                content.style.opacity = opacity;
-                content.style.transform = `translateY(${translateY}vh)`;
-
-                // Gestion zIndex et opacity slide background (fade)
-                if (slideProgress > 0 && slideProgress < 1) {
-                    slide.classList.add("active");
-                    slide.style.opacity = 1;
-                    slide.style.zIndex = 2;
-                } else {
-                    slide.classList.remove("active");
-                    slide.style.opacity = 0;
-                    slide.style.zIndex = 1;
-                }
-
-                // Appliquer image de fond
-                const bg = slide.getAttribute("data-bg");
-                if (bg) {
-                    slide.style.setProperty('--slide-bg', `url(${bg})`);
-                }
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", () => {
-            const firstSlide = document.querySelector(".rayon-slide");
-            const bg = firstSlide.getAttribute("data-bg");
-
-            if (bg) {
-                firstSlide.style.setProperty('--slide-bg', `url(${bg})`);
-            }
-
-            // Forcer une reflow rapide pour appliquer ::before
-            void firstSlide.offsetHeight;
-
-            firstSlide.classList.add("active");
-            firstSlide.style.opacity = 1;
-            firstSlide.style.zIndex = 2;
-        });
-
-
-        // Gestion de la navigation flottante
-        document.addEventListener("DOMContentLoaded", () => {
+        // Rayons défilants
+        loadSection("details", "sections/details.html", () => {
             const navLinks = document.querySelectorAll(".floating-link");
             const sectionIds = Array.from(navLinks).map(link => link.getAttribute("href").substring(1));
             const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
@@ -299,82 +219,109 @@
                         const id = entry.target.getAttribute("id");
 
                         navLinks.forEach(link => {
-                            if (link.getAttribute("href") === `#${id}`) {
-                                link.classList.add("active");
-                            } else {
-                                link.classList.remove("active");
-                            }
+                            link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
                         });
                     }
                 });
             }, {
-                root: null,
-                rootMargin: "0px",
+                threshold: 0.3,
+                rootMargin: "0px 0px -20% 0px"
+            });
+
+            sections.forEach(section => observer.observe(section));
+
+            // Gestion du scroll pour les rayons défilants
+            const section = document.querySelector("#rayons-scroll");
+            if (!section) return;
+
+            const slides = section.querySelectorAll(".rayon-slide");
+
+            window.addEventListener("scroll", () => {
+                const scrollTop = window.scrollY;
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const numSlides = slides.length;
+
+                let scrollRatio = (scrollTop - sectionTop) / sectionHeight;
+                scrollRatio = Math.min(1, Math.max(0, scrollRatio));
+
+                slides.forEach((slide, i) => {
+                    const content = slide.querySelector(".rayon-content");
+                    const slideStart = i / numSlides;
+                    const slideEnd = (i + 1) / numSlides;
+                    let slideProgress = (scrollRatio - slideStart) / (slideEnd - slideStart);
+                    slideProgress = Math.min(1, Math.max(0, slideProgress));
+
+                    let opacity = slideProgress <= 0.2 ? 0 : 1;
+                    let translateY = 40 - slideProgress * 2 * 40;
+
+                    content.style.opacity = opacity;
+                    content.style.transform = `translateY(${translateY}vh)`;
+
+                    if (slideProgress > 0 && slideProgress < 1) {
+                        slide.classList.add("active");
+                        slide.style.opacity = 1;
+                        slide.style.zIndex = 2;
+                    } else {
+                        slide.classList.remove("active");
+                        slide.style.opacity = 0;
+                        slide.style.zIndex = 1;
+                    }
+
+                    const bg = slide.getAttribute("data-bg");
+                    if (bg) {
+                        slide.style.setProperty('--slide-bg', `url(${bg})`);
+                    }
+                });
+            });
+
+            // Initialisation du premier slide
+            const firstSlide = section.querySelector(".rayon-slide");
+            const bg = firstSlide?.getAttribute("data-bg");
+            if (firstSlide && bg) {
+                firstSlide.style.setProperty('--slide-bg', `url(${bg})`);
+                void firstSlide.offsetHeight;
+                firstSlide.classList.add("active");
+                firstSlide.style.opacity = 1;
+                firstSlide.style.zIndex = 2;
+            }
+        });
+
+        // Navigation flottante
+        loadSection("flonav", "layout/flnav.html", () => {
+            const navLinks = document.querySelectorAll(".floating-link");
+            const sectionIds = Array.from(navLinks).map(link => link.getAttribute("href").substring(1));
+            const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute("id");
+                    navLinks.forEach(link => {
+                        link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
+                    });
+                });
+            }, {
                 threshold: 0.5
             });
 
-            sections.forEach(section => {
-                observer.observe(section);
-            });
+            sections.forEach(section => observer.observe(section));
         });
 
-        // Gestion de l'écran de chargement
-        window.addEventListener("load", () => {
-            const loader = document.getElementById("loading-screen");
-            setTimeout(() => {
-                loader.classList.add("hidden");
-            }, 500); // petite pause avant disparition
-        });
-    </script>
-
-    <script>
-        document.querySelector("#contact-form").addEventListener("submit", (e) => {
-            e.preventDefault();
-
-            const form = e.target;
-            let isValid = true;
-
-            const fields = [
-                { id: "name", error: "Veuillez renseigner votre nom complet." },
-                { id: "email", error: "Veuillez fournir une adresse e-mail valide." },
-                { id: "message", error: "Le champ message ne peut pas être vide." },
-            ];
-
-            fields.forEach((field) => {
-                const input = document.getElementById(field.id);
-                const errorElement = document.getElementById(`${field.id}Error`);
-                if (!input.value.trim()) {
-                    errorElement.textContent = field.error;
-                    errorElement.style.display = "block";
-                    isValid = false;
-                } else {
-                    errorElement.textContent = "";
-                    errorElement.style.display = "none";
-                }
-            });
-
-            if (isValid) {
-                const successMessage = document.getElementById("successMessage");
-                successMessage.textContent = "Votre message a été envoyé avec succès !";
-                successMessage.style.display = "block";
-                form.reset();
+        // Parallax (optionnel)
+        window.addEventListener("scroll", () => {
+            const bg = document.getElementById("parallax-bg");
+            if (bg) {
+                const offset = window.scrollY * 0.4;
+                bg.style.transform = `translateY(-${offset}px)`;
             }
         });
-    </script>
 
-    <script>
-        // Lightbox pour la galerie
-        document.querySelectorAll(".gallery-grid img").forEach(img => {
-            img.addEventListener("click", () => {
-                const lightbox = document.getElementById("lightbox");
-                const lightboxImg = lightbox.querySelector(".lightbox-img");
-                lightboxImg.src = img.src;
-                lightbox.style.display = "block";
-            });
-        });
-
-        document.querySelector(".lightbox-close").addEventListener("click", () => {
-            document.getElementById("lightbox").style.display = "none";
+        // Chargement terminé → cacher l’écran de chargement
+        window.addEventListener("load", () => {
+            const loader = document.getElementById("loading-screen");
+            if (loader) {
+                setTimeout(() => loader.classList.add("hidden"), 500);
+            }
         });
     </script>
 
